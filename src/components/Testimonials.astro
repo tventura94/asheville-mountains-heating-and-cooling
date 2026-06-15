@@ -1,0 +1,110 @@
+---
+const reviews = [
+  {
+    quote: 'Heat pump quit during the January cold snap. They were here in three hours, part on the truck, price matched the quote to the dollar.',
+    name: 'Dana W.',
+    place: 'West Asheville',
+    temp: '68.0°F',
+  },
+  {
+    quote: 'Third company we called for a new install — first one that measured the house instead of eyeballing it. Upstairs finally cools evenly.',
+    name: 'Marcus & Lee T.',
+    place: 'Black Mountain',
+    temp: '71.5°F',
+  },
+  {
+    quote: 'Comfort Club caught a failing capacitor in April. Eleven-dollar part. My neighbor had the same failure in July and paid emergency rates.',
+    name: 'Priya S.',
+    place: 'Weaverville',
+    temp: '72.0°F',
+  },
+];
+---
+
+<section class="reviews" id="reviews">
+  <div class="container">
+    <p class="mode-label" data-reveal>From the neighborhood</p>
+    <h2 class="reviews__title" data-reveal>1,400+ households<br />holding steady.</h2>
+
+    <div class="reviews__grid">
+      {reviews.map((r, i) => (
+        <figure class="review" data-reveal data-reveal-delay={i * 0.1}>
+          <blockquote>“{r.quote}”</blockquote>
+          <figcaption>
+            <span class="review__name">{r.name}</span>
+            <span class="review__place">{r.place}</span>
+            <span class="review__temp">{r.temp} · HOLDING</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews {
+    padding-block: var(--section-pad);
+    background: var(--ink-2);
+    border-block: 1px solid var(--ink-line);
+  }
+
+  .reviews__title {
+    font-size: clamp(2.4rem, 6vw, 4.6rem);
+    font-weight: 800;
+    margin-top: 1rem;
+  }
+
+  .reviews__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.6rem;
+    margin-top: 4rem;
+  }
+
+  .review {
+    margin: 0;
+    border: 1px solid var(--ink-line);
+    border-radius: 18px;
+    padding: 2rem 1.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    background: rgba(7, 17, 29, 0.5);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .review:hover {
+    border-color: rgba(87, 196, 255, 0.4);
+    transform: translateY(-4px);
+  }
+
+  .review blockquote {
+    margin: 0;
+    font-size: 1.04rem;
+    line-height: 1.7;
+    flex: 1;
+    color: var(--text);
+  }
+
+  .review figcaption {
+    display: grid;
+    gap: 0.15rem;
+    border-top: 1px solid var(--ink-line);
+    padding-top: 1.2rem;
+  }
+
+  .review__name { font-weight: 600; }
+  .review__place { color: var(--text-dim); font-size: 0.9rem; }
+
+  .review__temp {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    color: var(--glacier);
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 880px) {
+    .reviews__grid { grid-template-columns: 1fr; }
+  }
+</style>

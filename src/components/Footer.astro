@@ -1,0 +1,121 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <p class="footer__brand">Blue Ridge <em>Air Co.</em></p>
+      <p class="footer__tag">Heating · Cooling · Air Quality<br />Asheville, North Carolina</p>
+    </div>
+
+    <nav class="footer__col" aria-label="Services">
+      <p class="footer__heading">Services</p>
+      <a href="#services">AC repair</a>
+      <a href="#services">Heat pumps & furnaces</a>
+      <a href="#services">Indoor air quality</a>
+      <a href="#services">Maintenance</a>
+    </nav>
+
+    <nav class="footer__col" aria-label="Company">
+      <p class="footer__heading">Company</p>
+      <a href="#story">The 72° promise</a>
+      <a href="#process">How it works</a>
+      <a href="#reviews">Reviews</a>
+    </nav>
+
+    <div class="footer__col">
+      <p class="footer__heading">Talk to us</p>
+      <a href="tel:+18285550172" class="footer__phone">(828) 555-0172</a>
+      <a href="mailto:hello@blueridgeair.example.com">hello@blueridgeair.example.com</a>
+      <p class="footer__hours">Mon–Sat 7a–7p · Emergencies 24/7</p>
+    </div>
+  </div>
+
+  <div class="footer__line" aria-hidden="true"></div>
+
+  <div class="container footer__legal">
+    <span>© {year} Blue Ridge Air Co. — a fictional company. NC License #H-31477.</span>
+    <span class="footer__temp">SYSTEM STATUS: 72.0°F · HOLDING</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--ink-line);
+    padding-top: clamp(4rem, 8vw, 6rem);
+    background: var(--ink-2);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: 2.5rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .footer__brand {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin: 0;
+  }
+
+  .footer__brand em { font-style: normal; color: var(--glacier); }
+
+  .footer__tag {
+    color: var(--text-dim);
+    margin-top: 0.8rem;
+    line-height: 1.7;
+  }
+
+  .footer__col { display: grid; gap: 0.55rem; align-content: start; }
+
+  .footer__heading {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin: 0 0 0.4rem;
+  }
+
+  .footer__col a {
+    text-decoration: none;
+    font-size: 0.96rem;
+    width: fit-content;
+    color: var(--text);
+  }
+
+  .footer__col a:hover { color: var(--glacier); }
+
+  .footer__phone {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .footer__hours { color: var(--text-dim); font-size: 0.88rem; margin: 0.3rem 0 0; }
+
+  .footer__line { height: 3px; background: var(--temp-line); }
+
+  .footer__legal {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-block: 1.4rem;
+    color: var(--text-dim);
+    font-size: 0.84rem;
+  }
+
+  .footer__temp {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    color: var(--glacier);
+  }
+
+  @media (max-width: 880px) { .footer__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 540px) { .footer__grid { grid-template-columns: 1fr; } }
+</style>

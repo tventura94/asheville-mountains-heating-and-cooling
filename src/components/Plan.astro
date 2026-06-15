@@ -1,0 +1,137 @@
+---
+const perks = [
+  'Two seasonal tune-ups a year — spring cooling, fall heating',
+  'Priority scheduling, ahead of the July rush',
+  '15% off all repairs, parts and labor',
+  'No after-hours or weekend fees, ever',
+  'Filter delivery reminders matched to your system',
+];
+---
+
+<section class="plan" id="plan">
+  <div class="container plan__grid">
+    <div class="plan__copy">
+      <p class="mode-label">Comfort Club membership</p>
+      <h2 class="section-title">The cheapest repair is the one that never happens.</h2>
+      <p class="plan__sub">
+        Most July breakdowns we see were visible in April. Comfort Club
+        members get their systems inspected before each season turns, so
+        small faults stay small.
+      </p>
+      <ul class="plan__perks" role="list">
+        {perks.map((p) => <li>{p}</li>)}
+      </ul>
+    </div>
+
+    <div class="plan__card">
+      <p class="plan__card-label">MEMBERSHIP</p>
+      <p class="plan__price">
+        <span class="plan__amount">$16</span>
+        <span class="plan__per">/month per system</span>
+      </p>
+      <p class="plan__note">Cancel anytime. First tune-up scheduled within two weeks of joining.</p>
+      <a href="tel:+18285550172" class="btn btn--ember">Join the Comfort Club</a>
+      <p class="plan__fine">Or ask your technician on your next visit.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .plan {
+    padding-block: var(--section-pad);
+    background:
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-dim) 100%);
+  }
+
+  .plan__grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .plan__sub {
+    color: var(--text-soft);
+    font-size: 1.08rem;
+    max-width: 52ch;
+    margin-top: 1.2rem;
+  }
+
+  .plan__perks {
+    list-style: none;
+    padding: 0;
+    margin: 1.8rem 0 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .plan__perks li {
+    position: relative;
+    padding-left: 1.7rem;
+    font-weight: 500;
+  }
+
+  .plan__perks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 14px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--temp-line);
+  }
+
+  .plan__card {
+    background: var(--ink);
+    color: var(--text-inverse);
+    border-radius: var(--radius-lg);
+    padding: 2.4rem 2.2rem;
+    box-shadow: 0 24px 60px rgba(13, 27, 42, 0.28);
+    border-top: 5px solid transparent;
+    border-image: linear-gradient(90deg, var(--ember), var(--glacier)) 1;
+  }
+
+  .plan__card-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--text-inverse-soft);
+    margin: 0;
+  }
+
+  .plan__price {
+    margin: 0.8rem 0 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .plan__amount {
+    font-family: var(--font-display);
+    font-size: 3.4rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .plan__per {
+    color: var(--text-inverse-soft);
+    font-size: 0.95rem;
+  }
+
+  .plan__note {
+    color: var(--text-inverse-soft);
+    font-size: 0.95rem;
+    margin: 1rem 0 1.6rem;
+  }
+
+  .plan__fine {
+    font-size: 0.82rem;
+    color: var(--text-inverse-soft);
+    margin: 1rem 0 0;
+  }
+
+  @media (max-width: 880px) {
+    .plan__grid { grid-template-columns: 1fr; }
+  }
+</style>

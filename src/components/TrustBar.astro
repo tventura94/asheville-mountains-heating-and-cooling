@@ -1,0 +1,43 @@
+---
+const items = [
+  'NC Licensed & Insured · #H-31477',
+  'NATE-Certified Technicians',
+  'Carrier & Trane Authorized Dealer',
+  'EPA 608 Certified',
+  'Financing Available · 0% for 18 mo',
+];
+---
+
+<div class="trust" role="presentation">
+  <div class="container trust__inner">
+    {items.map((item) => <span class="trust__item">{item}</span>)}
+  </div>
+</div>
+
+<style>
+  .trust {
+    background: var(--paper-dim);
+    border-bottom: 1px solid rgba(13, 27, 42, 0.08);
+  }
+
+  .trust__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.6rem 2rem;
+    padding-block: 1rem;
+  }
+
+  .trust__item {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .trust__inner { justify-content: flex-start; }
+  }
+</style>

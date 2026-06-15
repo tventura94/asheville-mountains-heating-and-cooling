@@ -1,0 +1,325 @@
+---
+// Hero — air, made visible. A GPU particle field flows left to right,
+// each particle cooling from ember to glacier as it crosses the screen.
+---
+
+<section class="hero">
+  <canvas class="hero__canvas" id="air-canvas" aria-hidden="true"></canvas>
+  <div class="hero__scrim" aria-hidden="true"></div>
+
+  <div class="hero__content">
+    <p class="mode-label" data-reveal>Asheville · Western North Carolina</p>
+    <h1 class="hero__title" id="hero-title">
+      <span class="split-line"><span>We engineer</span></span>
+      <span class="split-line"><span>the air <em>you live in.</em></span></span>
+    </h1>
+    <p class="hero__sub" data-reveal data-reveal-delay="0.5">
+      Heating, cooling, and air quality for mountain homes — same-day
+      service, flat-rate pricing, and 72.0° guaranteed in writing.
+    </p>
+    <div class="hero__actions" data-reveal data-reveal-delay="0.65">
+      <a href="tel:+18285550172" class="btn btn--ember" data-magnetic>Call (828) 555-0172</a>
+      <a href="#services" class="btn btn--ghost" data-magnetic>Explore services</a>
+    </div>
+  </div>
+
+  <div class="hero__hint" aria-hidden="true">
+    <span>SCROLL TO COOL DOWN</span>
+    <span class="hero__hint-line"></span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-content: center;
+    overflow: hidden;
+  }
+
+  .hero__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(900px 480px at 50% 115%, rgba(7, 17, 29, 0.9), transparent 70%),
+      linear-gradient(180deg, rgba(7, 17, 29, 0.55) 0%, rgba(7, 17, 29, 0.1) 40%, rgba(7, 17, 29, 0.75) 100%);
+    pointer-events: none;
+  }
+
+  .hero__content {
+    position: relative;
+    width: min(var(--container), 100% - 2 * var(--gutter));
+    margin-inline: auto;
+    padding-top: 4rem;
+  }
+
+  .hero__title {
+    font-size: clamp(3rem, 9.5vw, 8.2rem);
+    font-weight: 800;
+    text-transform: none;
+    margin-top: 1.4rem;
+    max-width: 12ch;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    background: var(--temp-line);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero__sub {
+    color: var(--text-dim);
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    max-width: 44ch;
+    margin-top: 1.8rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.4rem;
+  }
+
+  .hero__hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    justify-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+  }
+
+  .hero__hint-line {
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(180deg, var(--text-dim), transparent);
+    animation: drip 2.2s ease-in-out infinite;
+  }
+
+  @keyframes drip {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__hint-line { animation: none; }
+  }
+</style>
+
+<script>
+  import * as THREE from 'three';
+  import { gsap } from 'gsap';
+
+  // ---------- headline reveal ----------
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const playIntro = () => {
+    if (reduceMotion) return;
+    gsap.to('#hero-title .split-line > span', {
+      y: 0,
+      duration: 1.2,
+      ease: 'power4.out',
+      stagger: 0.12,
+      delay: 0.1,
+    });
+  };
+
+  // Wait for the preloader if it exists, otherwise play immediately.
+  if (document.getElementById('preloader')) {
+    window.addEventListener('site:ready', playIntro, { once: true });
+  } else {
+    playIntro();
+  }
+
+  // ---------- magnetic buttons ----------
+  if (!reduceMotion && matchMedia('(pointer: fine)').matches) {
+    document.querySelectorAll('[data-magnetic]').forEach((btn) => {
+      const strength = 0.35;
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const x = e.clientX - (r.left + r.width / 2);
+        const y = e.clientY - (r.top + r.height / 2);
+        gsap.to(btn, { x: x * strength, y: y * strength, duration: 0.4, ease: 'power3.out' });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.4)' });
+      });
+    });
+  }
+
+  // ---------- the air field ----------
+  const canvas = document.getElementById('air-canvas');
+
+  function initAir() {
+    if (!canvas) return;
+
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    } catch {
+      return; // no WebGL — the scrim gradient carries the hero alone
+    }
+
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    camera.position.z = 22;
+
+    const COUNT = 7000;
+    const WIDTH = 60;
+    const HEIGHT = 30;
+    const DEPTH = 18;
+
+    const positions = new Float32Array(COUNT * 3);
+    const seeds = new Float32Array(COUNT * 3);
+
+    for (let i = 0; i < COUNT; i++) {
+      positions[i * 3 + 0] = (Math.random() - 0.5) * WIDTH;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * HEIGHT;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * DEPTH;
+      seeds[i * 3 + 0] = Math.random() * 100.0; // phase
+      seeds[i * 3 + 1] = 0.4 + Math.random() * 0.9; // speed
+      seeds[i * 3 + 2] = Math.random(); // size jitter
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 3));
+
+    const uniforms = {
+      uTime: { value: 0 },
+      uWidth: { value: WIDTH },
+      uEmber: { value: new THREE.Color('#ff5c33') },
+      uGlacier: { value: new THREE.Color('#57c4ff') },
+      uPixelRatio: { value: Math.min(devicePixelRatio, 2) },
+    };
+
+    const material = new THREE.ShaderMaterial({
+      uniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader: /* glsl */ `
+        attribute vec3 aSeed;
+        uniform float uTime;
+        uniform float uWidth;
+        uniform float uPixelRatio;
+        varying float vHeat;
+        varying float vFade;
+
+        void main() {
+          vec3 pos = position;
+
+          // flow left -> right, wrapping around
+          float travel = mod(pos.x + uWidth * 0.5 + uTime * aSeed.y * 2.2 + aSeed.x, uWidth);
+          pos.x = travel - uWidth * 0.5;
+
+          // layered sine "turbulence" — cheap curl-ish drift
+          float t = uTime * 0.6 + aSeed.x;
+          pos.y += sin(t + pos.x * 0.25) * 1.4 + sin(t * 1.7 + pos.x * 0.07) * 0.8;
+          pos.z += cos(t * 0.8 + pos.x * 0.18) * 1.1;
+
+          // 0 at hot edge, 1 at cool edge
+          vHeat = travel / uWidth;
+
+          // fade at both horizontal edges so the wrap is invisible
+          vFade = smoothstep(0.0, 0.08, vHeat) * (1.0 - smoothstep(0.92, 1.0, vHeat));
+
+          vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = (1.2 + aSeed.z * 2.4) * uPixelRatio * (18.0 / -mv.z);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform vec3 uEmber;
+        uniform vec3 uGlacier;
+        varying float vHeat;
+        varying float vFade;
+
+        void main() {
+          // soft round particle
+          float d = length(gl_PointCoord - 0.5);
+          float alpha = smoothstep(0.5, 0.05, d) * vFade * 0.85;
+          if (alpha < 0.01) discard;
+
+          vec3 color = mix(uEmber, uGlacier, smoothstep(0.12, 0.88, vHeat));
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    // gentle camera parallax
+    const target = { x: 0, y: 0 };
+    if (matchMedia('(pointer: fine)').matches) {
+      window.addEventListener('mousemove', (e) => {
+        target.x = (e.clientX / innerWidth - 0.5) * 2;
+        target.y = (e.clientY / innerHeight - 0.5) * 2;
+      }, { passive: true });
+    }
+
+    const resize = () => {
+      const w = canvas.clientWidth || innerWidth;
+      const h = canvas.clientHeight || innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const clock = new THREE.Clock();
+    let visible = true;
+    let rafId = 0;
+
+    const tick = () => {
+      uniforms.uTime.value = clock.getElapsedTime();
+      camera.position.x += (target.x * 1.6 - camera.position.x) * 0.04;
+      camera.position.y += (-target.y * 1.0 - camera.position.y) * 0.04;
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+      if (visible) rafId = requestAnimationFrame(tick);
+    };
+
+    if (reduceMotion) {
+      // single static frame — the field is still beautiful frozen
+      uniforms.uTime.value = 8;
+      renderer.render(scene, camera);
+      return;
+    }
+
+    // pause when the hero scrolls out of view
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) {
+        clock.start();
+        rafId = requestAnimationFrame(tick);
+      } else {
+        cancelAnimationFrame(rafId);
+      }
+    }).observe(canvas);
+  }
+
+  initAir();
+</script>

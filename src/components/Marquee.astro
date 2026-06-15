@@ -1,0 +1,62 @@
+---
+const items = [
+  'NC LICENSED #H-31477',
+  'NATE CERTIFIED',
+  '24/7 EMERGENCY LINE',
+  '4.9★ — 1,400+ REVIEWS',
+  'CARRIER & TRANE DEALER',
+  'SAME-DAY SERVICE',
+  '0% FINANCING · 18 MO',
+];
+const row = [...items, ...items];
+---
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    {row.map((item) => (
+      <span class="marquee__item">{item}<i class="marquee__dot"></i></span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marquee {
+    border-block: 1px solid var(--ink-line);
+    overflow: hidden;
+    padding-block: 1.1rem;
+    background: var(--ink-2);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: scroll 36s linear infinite;
+  }
+
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    padding-right: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .marquee__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--temp-line);
+  }
+
+  @keyframes scroll {
+    to { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track { animation: none; }
+  }
+</style>

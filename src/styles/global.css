@@ -1,0 +1,120 @@
+/* ------------------------------------------------------------------
+   Blue Ridge Air Co. — v2 design tokens
+   One idea everywhere: heat → cool. The scroll is the thermostat.
+------------------------------------------------------------------- */
+
+:root {
+  --ink: #07111d;
+  --ink-2: #0d1b2a;
+  --ink-line: rgba(159, 178, 196, 0.16);
+  --paper: #f4f6f8;
+  --ember: #ff5c33;
+  --ember-soft: #ff8a5c;
+  --glacier: #57c4ff;
+  --glacier-soft: #9adcff;
+  --text: #e9f1f7;
+  --text-dim: #8fa3b5;
+  --text-dark: #16242f;
+
+  --temp-line: linear-gradient(90deg, var(--ember) 0%, var(--ember-soft) 32%, var(--glacier-soft) 68%, var(--glacier) 100%);
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --container: 1280px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --section-pad: clamp(6rem, 12vw, 10rem);
+}
+
+* , *::before, *::after { box-sizing: border-box; }
+
+html { height: 100%; }
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--ink);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+::selection { background: var(--ember); color: #fff; }
+
+/* primitives -------------------------------------------------------- */
+
+.container {
+  width: min(var(--container), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+.mode-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.mode-label::before {
+  content: '';
+  width: 36px;
+  height: 2px;
+  background: var(--temp-line);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem 1.9rem;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn:focus-visible { outline: 2px solid var(--glacier); outline-offset: 4px; }
+
+.btn--ember { background: var(--ember); color: #fff; }
+.btn--ember:hover { background: #ff744f; }
+
+.btn--ghost { border-color: var(--ink-line); color: var(--text); }
+.btn--ghost:hover { border-color: var(--glacier); color: var(--glacier); }
+
+/* split-text helpers: lines are wrapped by JS */
+.split-line { display: block; overflow: hidden; }
+.split-line > span { display: block; transform: translateY(110%); }
+
+html.no-motion .split-line > span { transform: none; }
+
+/* reveal-on-scroll default state (JS animates in) */
+[data-reveal] { opacity: 0; transform: translateY(34px); }
+html.no-motion [data-reveal] { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .split-line > span { transform: none !important; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+}

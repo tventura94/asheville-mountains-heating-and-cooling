@@ -1,0 +1,101 @@
+---
+// Preloader — the site "warms up" to 72.0° before revealing.
+---
+
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader__readout">
+    <span class="preloader__value" id="preloader-value">00.0</span>
+    <span class="preloader__unit">°F</span>
+  </div>
+  <span class="preloader__label">CALIBRATING COMFORT</span>
+  <div class="preloader__bar"><span id="preloader-fill"></span></div>
+</div>
+
+<style>
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--ink);
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.1rem;
+  }
+
+  .preloader__readout {
+    font-family: var(--font-mono);
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .preloader__unit {
+    font-size: 0.35em;
+    color: var(--text-dim);
+  }
+
+  .preloader__label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+  }
+
+  .preloader__bar {
+    width: 180px;
+    height: 2px;
+    background: var(--ink-line);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+
+  .preloader__bar span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--temp-line);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const pre = document.getElementById('preloader');
+  const value = document.getElementById('preloader-value');
+  const fill = document.getElementById('preloader-fill');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (pre) {
+    if (reduceMotion) {
+      pre.remove();
+    } else {
+      document.documentElement.style.overflow = 'hidden';
+      const state = { t: 12.4 };
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          document.documentElement.style.overflow = '';
+          pre.remove();
+          window.dispatchEvent(new CustomEvent('site:ready'));
+        },
+      });
+
+      tl.to(state, {
+        t: 72.0,
+        duration: 1.4,
+        ease: 'power2.inOut',
+        onUpdate: () => {
+          if (value) value.textContent = state.t.toFixed(1);
+        },
+      })
+        .to(fill, { scaleX: 1, duration: 1.4, ease: 'power2.inOut' }, 0)
+        .to(pre, { yPercent: -100, duration: 0.8, ease: 'power4.inOut' }, '+=0.15');
+    }
+  }
+</script>

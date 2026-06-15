@@ -1,0 +1,115 @@
+---
+// A service call is a real sequence — numbering is earned here.
+const steps = [
+  {
+    n: '01',
+    title: 'Call or book online',
+    body: 'A person answers, not a phone tree. Same-day arrival window, confirmed by text.',
+  },
+  {
+    n: '02',
+    title: 'Flat-rate diagnosis',
+    body: 'The full repair is quoted from a printed price book before a wrench is lifted. It never changes mid-job.',
+  },
+  {
+    n: '03',
+    title: 'Fix it, prove it',
+    body: 'Repaired, tested under load, and walked through with you — readings on the gauge, not promises.',
+  },
+  {
+    n: '04',
+    title: 'Guaranteed in writing',
+    body: 'Two years on repairs, ten on installs. In-warranty return trips are free. All of it on paper.',
+  },
+];
+---
+
+<section class="process" id="process">
+  <div class="container">
+    <p class="mode-label" data-reveal>How a service call works</p>
+    <h2 class="process__title" data-reveal>No surprises between<br />hello and goodbye.</h2>
+
+    <ol class="process__list" role="list">
+      {steps.map((s, i) => (
+        <li class="step" data-reveal data-reveal-delay={i * 0.12}>
+          <span class="step__tick" aria-hidden="true"></span>
+          <span class="step__n">{s.n}</span>
+          <h3>{s.title}</h3>
+          <p>{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    padding-block: var(--section-pad);
+    background: var(--ink-2);
+    border-block: 1px solid var(--ink-line);
+  }
+
+  .process__title {
+    font-size: clamp(2.4rem, 6vw, 4.6rem);
+    font-weight: 800;
+    margin-top: 1rem;
+  }
+
+  .process__list {
+    list-style: none;
+    margin: 4rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.4rem;
+  }
+
+  .step {
+    position: relative;
+    padding-top: 1.8rem;
+    border-top: 1px solid var(--ink-line);
+  }
+
+  .step__tick {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  /* each tick samples the temperature line: the call "cools" the problem */
+  .step:nth-child(1) .step__tick { background: var(--ember); }
+  .step:nth-child(2) .step__tick { background: var(--ember-soft); }
+  .step:nth-child(3) .step__tick { background: var(--glacier-soft); }
+  .step:nth-child(4) .step__tick { background: var(--glacier); }
+
+  .step__n {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    color: var(--text-dim);
+  }
+
+  .step h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 0.7rem;
+    letter-spacing: -0.01em;
+  }
+
+  .step p {
+    color: var(--text-dim);
+    font-size: 0.96rem;
+    margin-top: 0.6rem;
+  }
+
+  @media (max-width: 980px) {
+    .process__list { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .process__list { grid-template-columns: 1fr; }
+  }
+</style>

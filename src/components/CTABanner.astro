@@ -1,0 +1,97 @@
+---
+// Closing argument: huge type, one magnetic action.
+---
+
+<section class="cta">
+  <div class="container cta__inner">
+    <p class="mode-label" data-reveal>Set it and forget it</p>
+    <h2 class="cta__title">
+      <span class="split-line-scroll">Too hot?</span>
+      <span class="split-line-scroll">Too cold?</span>
+      <span class="split-line-scroll cta__accent">That ends today.</span>
+    </h2>
+    <div class="cta__row" data-reveal>
+      <a href="tel:+18285550172" class="btn btn--ember cta__btn" data-magnetic>
+        Call (828) 555-0172
+      </a>
+      <p class="cta__note">
+        Same-day appointments across Asheville, Black Mountain,
+        Weaverville &amp; Hendersonville.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: var(--section-pad);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: auto -10% -40% -10%;
+    height: 70%;
+    background: radial-gradient(50% 100% at 50% 100%, rgba(255, 92, 51, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta__inner { position: relative; }
+
+  .cta__title {
+    font-size: clamp(3.4rem, 11vw, 9.5rem);
+    font-weight: 800;
+    margin-top: 1.2rem;
+  }
+
+  .cta__title span { display: block; }
+
+  .cta__accent {
+    background: var(--temp-line);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .cta__row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .cta__btn {
+    font-size: 1.1rem;
+    padding: 1.2rem 2.4rem;
+  }
+
+  .cta__note {
+    color: var(--text-dim);
+    max-width: 34ch;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion) {
+    gsap.from('.split-line-scroll', {
+      yPercent: 60,
+      opacity: 0,
+      duration: 1,
+      ease: 'power4.out',
+      stagger: 0.12,
+      scrollTrigger: { trigger: '.cta__title', start: 'top 80%' },
+    });
+  }
+</script>
